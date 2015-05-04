@@ -44,9 +44,7 @@ To make a transaction:
 ```
 
 For more information on what to put in the request hash, refer to the
-API reference guide - https://firstdata.zendesk.com/entries/407571-First-Data-Global-Gateway-e4-Web-Service-API-Reference-Guide
-
-or scroll down for examples.
+[API reference guide](https://firstdata.zendesk.com/entries/407571-First-Data-Global-Gateway-e4-Web-Service-API-Reference-Guide) or scroll down for examples.
 
 ## Examples
 
@@ -74,10 +72,12 @@ Firstdata.transact(
 )
 ```
 
+### Transarmor flow:
+
 Pre-Authorization:
 
 ```ruby
-Firstdata.transact(
+res = Firstdata.transact(
   {
     transaction_type: '01',
     amount: 0,
@@ -94,6 +94,20 @@ Firstdata.transact(
       phone_number: '1111111111',
       phone_type: 'H',
     }
+  }
+)
+```
+
+Purchase:
+```ruby
+res2 = Firstdata.transact(
+  {
+    transaction_type: '00',
+    amount: 50, 
+    credit_card_type: "Visa", 
+    cc_expiry: '1020',
+    cardholder_name: 'Test Name', 
+    transarmor_token: "#{res['transarmor_token']}",
   }
 )
 ```
