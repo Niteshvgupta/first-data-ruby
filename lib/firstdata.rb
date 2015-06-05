@@ -29,7 +29,7 @@ module Firstdata
   private
 
   def self.digest(payload)
-    OpenSSL::Digest.new('sha1', payload)
+    OpenSSL::Digest.new('sha256', payload)
   end
 
   def self.gen_hmac(digest, data)
