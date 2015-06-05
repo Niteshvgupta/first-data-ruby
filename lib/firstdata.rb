@@ -54,7 +54,7 @@ module Firstdata
         'Content-Type' => type,
         'Accept' => type,
         'x-gge4-date' => time,
-        'x-gge4-content-sha1' => content_digest.to_s,
+        'x-gge4-content-sha256' => content_digest.to_s,
         'Authorization' => "GGE4_API #{@key_id}:#{hmac}"
     }
   end
