@@ -24,7 +24,7 @@ module Firstdata
   end
 
   def self.transact(payload)
-    body = payload.merge(gateway_id: @gateway_id, password: @password).to_xml((:root => 'Transaction', :dasherize => false, :skip_instruct => true, :skip_types => true)
+    body = payload.merge(ExactID: @gateway_id, Password: @password).to_xml(:root => 'Transaction', :dasherize => false, :skip_instruct => true, :skip_types => true)
     post(set_headers(body), body, api_url)
   end
 
@@ -66,15 +66,16 @@ module Firstdata
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, headers)
-    request.body = body
+    puts body
+	request.body = body
     commit_post(http, request)
   end
 
   def self.commit_post(http, request)
     begin
       response = http.request(request)
-      JSON.parse response.body
-    rescue JSON::ParserError
+      Hash.from_trusted_xml(response.body)
+    rescue
       handle_error(response)
     end
   end
