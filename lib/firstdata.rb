@@ -6,11 +6,13 @@
 #
 # MIT License
 
-require 'json'
+#require 'json'
 require 'openssl'
 require 'net/http'
 require 'time'
 require 'base64'
+require 'active_support/core_ext/hash/conversions'
+
 
 require_relative 'firstdata/version'
 
@@ -22,14 +24,14 @@ module Firstdata
   end
 
   def self.transact(payload)
-    body = payload.merge(gateway_id: @gateway_id, password: @password).to_json
+    body = payload.merge(gateway_id: @gateway_id, password: @password).to_xml((:root => 'Transaction', :dasherize => false, :skip_instruct => true, :skip_types => true)
     post(set_headers(body), body, api_url)
   end
 
   private
 
   def self.digest(payload)
-    OpenSSL::Digest.new('sha256', payload)
+    OpenSSL::Digest.new('sha1', payload)
   end
 
   def self.gen_hmac(digest, data)
@@ -45,7 +47,7 @@ module Firstdata
   end
 
   def self.set_headers(payload)
-    type = 'application/json'
+    type = 'application/xml'
     time = Time.now.utc.iso8601
     content_digest = digest(payload)
     data = concat('POST', type, content_digest.to_s, time, urn)
@@ -54,7 +56,7 @@ module Firstdata
         'Content-Type' => type,
         'Accept' => type,
         'x-gge4-date' => time,
-        'x-gge4-content-sha256' => content_digest.to_s,
+        'x-gge4-content-sha1' => content_digest.to_s,
         'Authorization' => "GGE4_API #{@key_id}:#{hmac}"
     }
   end
