@@ -66,7 +66,6 @@ module Firstdata
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, headers)
-    puts body
 	request.body = body
     commit_post(http, request)
   end
